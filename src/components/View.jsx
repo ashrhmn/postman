@@ -17,15 +17,25 @@ const View = () => {
   };
 
   const handleSendClick = async () => {
-    if (selectedMethod == methods[0]) {
-      try {
-        const response = await axios.get(link);
-        const data = response.data;
-        setResult(data);
-      } catch (error) {
-        setResult(error);
-        console.log(error);
+    const service = axios.create({
+      baseURL: link,
+      headers: {
+        "X-Custom-Header": "foobar",
+        "X-Custom-Header1": "foobar1",
+        "X-Custom-Header2": "foobar2",
+      },
+    });
+
+    try {
+      let response = null;
+      switch (selectedMethod) {
+        case "GET":
+          response = await service.get();
       }
+      setResult(response.data);
+    } catch (error) {
+      setResult(error);
+      console.log(error);
     }
   };
 
@@ -42,7 +52,7 @@ const View = () => {
       <button onClick={handleSendClick}>Send</button>
       <br />
       <div>
-        <pre>{result != "" ? JSON.stringify(result, null, 2) : ""}</pre>
+        <pre>{result != "" ? JSON.stringify(result, null, 2) : null}</pre>
       </div>
     </div>
   );
